@@ -1,11 +1,16 @@
 package cache;
 
 import com.google.common.collect.Lists;
+import dao.BlockChainDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -21,12 +26,17 @@ public class CacheService {
     private Lock writeLock;
     private Lock readLock;
 
+    private List<String> cacheList;
+
     // private constructor restricted to this class itself
     private CacheService() {
         this.cacheMap = new ConcurrentHashMap<>();
         this.lock = new ReentrantReadWriteLock();
         this.writeLock = this.lock.writeLock();
         this.readLock = this.lock.readLock();
+
+        this.cacheList = new LinkedList<>();
+
     }
 
     // static method to create instance of Singleton class
@@ -48,7 +58,11 @@ public class CacheService {
             curr.add(message);
             this.cacheMap.put(key, curr);
         }
+
+
         this.writeLock.unlock();
+
+
     }
 
     public List<String> getValueAsList(String key) {
@@ -70,4 +84,32 @@ public class CacheService {
     }
 
 
+    public void putSingleElementInCache(String body) {
+
+        this.writeLock.lock();
+
+        this.cacheList.add(body);
+        logger.info("cache size now is " + this.cacheList.size());
+
+        if (this.cacheList.size() >= 5) {
+            logger.info("this cache list size is more than 5");
+
+            List<String> forDaoList = new ArrayList<>(this.cacheList);
+            try {
+                CompletableFuture.supplyAsync(() -> {
+                    System.out.println(forDaoList);
+                    return BlockChainDAO.getInstance().save(forDaoList);
+                }).get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            this.cacheList.clear();
+        }
+
+        this.writeLock.unlock();
+
+
+    }
 }

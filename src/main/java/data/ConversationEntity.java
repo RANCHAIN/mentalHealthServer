@@ -4,6 +4,14 @@ public class ConversationEntity {
     private String sender;
     private String msg;
 
+    public ConversationEntity() {
+    }
+
+    public ConversationEntity(String sender, String msg) {
+        this.sender = sender;
+        this.msg = msg;
+    }
+
     public String getSender() {
         return sender;
     }

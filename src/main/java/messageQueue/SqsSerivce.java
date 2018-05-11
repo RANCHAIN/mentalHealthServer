@@ -117,10 +117,11 @@ public class SqsSerivce {
 
         if (!messages.isEmpty()) {
             deleteReceivedMessages(queueUrl, messages.get(0));
+            return messages.get(0);
         }
 
 
-        return messages.get(0);
+        return null;
 
 
     }

@@ -1,9 +1,6 @@
 package controller;
 
-import data.ChatMessage;
-import data.ChatSession;
-import data.SEVERITY;
-import data.TOPICS;
+import data.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.http.ResponseEntity;
@@ -62,21 +59,34 @@ public class ChatControllerImplTest {
     }
 
     @Test
-    public void generateMockup() {
-        ChatSession chatSession = new ChatSession();
-        chatSession.setFromId("from3");
-        chatSession.setToId("to3");
-        chatSession.setSeverity(SEVERITY.HIGH);
-        chatSession.setTimeStamp("20170809");
-        chatSession.setTopics(TOPICS.LOVE);
+    public void generateMockup2() {
 
-        System.out.println(Utils.getBeautifiedJson.apply(chatSession));
-
-
-        ChatMessage chatMessage = new ChatMessage("https://sqs.us-east-1.amazonaws.com/183523990685/from3TTTOOOto3", "contentForTesting");
-        System.out.println(Utils.getBeautifiedJson.apply(chatMessage));
-
+        ChatControllerImpl chatController = new ChatControllerImpl();
+        ResponseEntity<String> res = chatController.receiveConversation(this.header, new ConversationEntity("sen", "sss"));
+        System.out.println(res.getBody());
 
     }
+
+    @Test
+    public void generateMockup() {
+//        ChatSession chatSession = new ChatSession();
+//        chatSession.setFromId("from3");
+//        chatSession.setToId("to3");
+//        chatSession.setSeverity(SEVERITY.HIGH);
+//        chatSession.setTimeStamp("20170809");
+//        chatSession.setTopics(TOPICS.LOVE);
+//
+//        System.out.println(Utils.getBeautifiedJson.apply(chatSession));
+//
+//
+//        ChatMessage chatMessage = new ChatMessage("https://sqs.us-east-1.amazonaws.com/183523990685/from3TTTOOOto3", "contentForTesting");
+//        System.out.println(Utils.getBeautifiedJson.apply(chatMessage));
+
+        ChatControllerImpl chatController = new ChatControllerImpl();
+        ResponseEntity<String> res = chatController.receiveConversation(this.header, new ConversationEntity("sen", "sss"));
+        System.out.println(res.getBody());
+
+    }
+
 
 }

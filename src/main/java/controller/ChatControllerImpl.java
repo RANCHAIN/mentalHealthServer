@@ -10,6 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import messageQueue.SqsSerivce;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -177,7 +178,10 @@ public class ChatControllerImpl {
             // expecting:  application/json; charset=utf-8
             @RequestBody ConversationEntity conversationEntity) {
 
-        logger.info("receiveConversation of " + Utils.getBeautifiedJson.apply(conversationEntity));
+        String receivedData = Utils.getBeautifiedJson.apply(conversationEntity);
+        logger.info("receiveConversation of " + receivedData);
+        SqsSerivce sqsSerivce = SqsSerivce.getInstance();
+        sqsSerivce.insertOneMessageToOneQueue("https://sqs.us-east-1.amazonaws.com/183523990685/mentalQueue", receivedData);
         return new ResponseEntity<String>("ok", HttpStatus.OK);
 
 

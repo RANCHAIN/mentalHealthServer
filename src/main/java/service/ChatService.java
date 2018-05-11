@@ -6,11 +6,14 @@ import data.ChatSession;
 import messageQueue.SqsSerivce;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+@Component
 public class ChatService {
 
     private static ChatService single_instance = null;
@@ -18,6 +21,7 @@ public class ChatService {
     private SqsSerivce sqsSerivce;
     private CacheService cacheService;
     private BlockChainService blockChainService;
+
 
     // private constructor restricted to this class itself
     private ChatService() {
@@ -95,6 +99,22 @@ public class ChatService {
     public Message receiveMsgs(String queryUrl) throws ExecutionException, InterruptedException {
         Message res = this.sqsSerivce.receiveMessagesFromQueue(queryUrl);
         return res;
+    }
+
+    @Scheduled(fixedRate = 5000)
+    public void getFilesFromQueue() {
+
+        logger.info("getting logger queues");
+        SqsSerivce sqsSerivce = SqsSerivce.getInstance();
+        Message res = sqsSerivce.receiveMessagesFromQueue("https://sqs.us-east-1.amazonaws.com/183523990685/mentalQueue");
+
+        if (res != null) {
+            logger.info(res.getBody());
+
+            CacheService.getInstance().putSingleElementInCache(res.getBody());
+        }
+
+
     }
 
 

@@ -9,17 +9,21 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.net.URISyntaxException;
+
 @SpringBootApplication
 @EnableAutoConfiguration
 @EnableAsync
 @EnableCaching
-@ComponentScan({"controller", "messageQueue", "config"})
+@ComponentScan({"controller", "messageQueue", "config", "service"})
 @EnableSwagger2
+@EnableScheduling
 public class Main {
 
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
@@ -38,7 +42,7 @@ public class Main {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws URISyntaxException {
         SpringApplication.run(Main.class, args);
 
 

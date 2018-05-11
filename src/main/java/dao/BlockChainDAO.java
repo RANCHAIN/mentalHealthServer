@@ -2,6 +2,9 @@ package dao;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.Utils;
+
+import java.util.List;
 
 public class BlockChainDAO {
     private static BlockChainDAO single_instance = null;
@@ -28,6 +31,12 @@ public class BlockChainDAO {
         return true;
     }
 
+    public boolean save(List<String> lists) {
+
+        String forSave = Utils.getBeautifiedJson.apply(lists);
+        logger.info("save " + forSave);
+        return true;
+    }
 
     public String read(String str) {
         logger.info("read");
