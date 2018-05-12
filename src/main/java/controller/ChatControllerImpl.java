@@ -1,6 +1,7 @@
 package controller;
 
 
+import cache.CacheService;
 import com.amazonaws.services.sqs.model.Message;
 import data.*;
 import io.swagger.annotations.Api;
@@ -246,6 +247,32 @@ public class ChatControllerImpl {
 
         return new ResponseEntity<List<String>>(NlpService.getInstance().getTopics(text), HttpStatus.OK);
 
+    }
+
+
+    @RequestMapping(value = "/nlp/submit", method = RequestMethod.POST)
+    @ApiOperation(value = "nlp submit", response = ResponseEntity.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully"),
+            @ApiResponse(code = 500, message = "Exception is encountered")
+    })
+    public ResponseEntity<Verdict> nlpSubmit(
+            @RequestBody String username) {
+        Verdict v = NlpService.getInstance().getVerdictForThisUsername(username);
+        CacheService.getInstance().putSingleElementInCacheForVerdicts(v);
+        return new ResponseEntity<Verdict>(v, HttpStatus.OK);
+    }
+
+
+    @RequestMapping(value = "/nlp/getAllVerdicts", method = RequestMethod.GET)
+    @ApiOperation(value = "nlp getAllVerdicts", response = ResponseEntity.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully"),
+            @ApiResponse(code = 500, message = "Exception is encountered")
+    })
+    public ResponseEntity<List<Verdict>> getAllVerdicts() {
+        List<Verdict> cs = CacheService.getInstance().getAllVerdicts();
+        return new ResponseEntity<List<Verdict>>(cs, HttpStatus.OK);
     }
 
 

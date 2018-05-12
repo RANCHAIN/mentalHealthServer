@@ -1,7 +1,10 @@
 package cache;
 
 import com.google.common.collect.Lists;
+import com.google.gson.Gson;
 import dao.BlockChainDAO;
+import data.ConversationEntity;
+import data.Verdict;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +30,7 @@ public class CacheService {
     private Lock readLock;
 
     private List<String> cacheList;
+    private List<Verdict> cacheListForVerdicts;
 
     // private constructor restricted to this class itself
     private CacheService() {
@@ -36,6 +40,7 @@ public class CacheService {
         this.readLock = this.lock.readLock();
 
         this.cacheList = new LinkedList<>();
+        this.cacheListForVerdicts = new LinkedList<>();
 
     }
 
@@ -111,5 +116,49 @@ public class CacheService {
         this.writeLock.unlock();
 
 
+    }
+
+
+    public void putSingleElementInCacheForNLP(String body) {
+        this.writeLock.lock();
+        this.cacheList.add(body);
+        logger.info("cache size now is " + this.cacheList.size());
+        this.writeLock.unlock();
+    }
+
+    public List<String> getAllMsgsFromCacheForNLPByUser(String user) {
+        this.writeLock.lock();
+        List<String> res = Lists.newArrayList();
+
+        for (int i = 0; i < this.cacheList.size(); i++) {
+            String item = this.cacheList.get(i);
+            Gson g = new Gson();
+            ConversationEntity conversationEntity = g.fromJson(item, ConversationEntity.class);
+            if (conversationEntity != null) {
+                if (conversationEntity.getSender().equalsIgnoreCase(user)) {
+                    res.add(conversationEntity.getMsg());
+                    this.cacheList.remove(i);
+                }
+            }
+        }
+
+        this.writeLock.unlock();
+        return res;
+    }
+
+
+    public void putSingleElementInCacheForVerdicts(Verdict verdict) {
+        this.writeLock.lock();
+        this.cacheListForVerdicts.add(verdict);
+        logger.info("cache size now is " + this.cacheListForVerdicts.size());
+        this.writeLock.unlock();
+    }
+
+    public List<Verdict> getAllVerdicts() {
+        this.writeLock.lock();
+        List<Verdict> re = new ArrayList<>(this.cacheListForVerdicts);
+        this.cacheListForVerdicts.clear();
+        this.writeLock.unlock();
+        return re;
     }
 }

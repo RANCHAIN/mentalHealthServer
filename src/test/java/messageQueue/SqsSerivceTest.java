@@ -35,9 +35,9 @@ public class SqsSerivceTest {
         Assert.assertTrue(res.contains(q2));
         Assert.assertTrue(res.contains(q3));
 
-        sqsSerivce.deleteOneQueue("q1");
-        sqsSerivce.deleteOneQueue("q2");
-        sqsSerivce.deleteOneQueue("q3");
+//        sqsSerivce.deleteOneQueue("q1");
+//        sqsSerivce.deleteOneQueue("q2");
+//        sqsSerivce.deleteOneQueue("q3");
 
 
     }

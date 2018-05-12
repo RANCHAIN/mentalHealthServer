@@ -2,6 +2,7 @@ package service;
 
 import cache.CacheService;
 import com.amazonaws.services.sqs.model.Message;
+import com.amazonaws.services.sqs.model.QueueDoesNotExistException;
 import data.ChatSession;
 import messageQueue.SqsSerivce;
 import org.slf4j.Logger;
@@ -101,19 +102,23 @@ public class ChatService {
         return res;
     }
 
-    @Scheduled(fixedRate = 100000)
+    @Scheduled(fixedRate = 3000)
     public void getFilesFromQueue() {
 
         logger.info("getting logger queues");
         SqsSerivce sqsSerivce = SqsSerivce.getInstance();
-        Message res = sqsSerivce.receiveMessagesFromQueue("https://sqs.us-east-1.amazonaws.com/183523990685/mentalQueue");
+        try {
+            Message res = sqsSerivce.receiveMessagesFromQueue("https://sqs.us-east-1.amazonaws.com/183523990685/mentalQueue");
+            if (res != null) {
+                logger.info(res.getBody());
 
-        if (res != null) {
-            logger.info(res.getBody());
+                CacheService.getInstance().putSingleElementInCache(res.getBody());
+                CacheService.getInstance().putSingleElementInCacheForNLP(res.getBody());
+            }
+        } catch (QueueDoesNotExistException queueDoesNotExistException) {
 
-            CacheService.getInstance().putSingleElementInCache(res.getBody());
+            logger.info("this queue is empty");
         }
-
 
     }
 
