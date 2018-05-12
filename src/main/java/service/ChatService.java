@@ -102,7 +102,7 @@ public class ChatService {
         return res;
     }
 
-    @Scheduled(fixedRate = 3000)
+    @Scheduled(fixedRate = 300000)
     public void getFilesFromQueue() {
 
         logger.info("getting logger queues");
@@ -113,7 +113,7 @@ public class ChatService {
                 logger.info(res.getBody());
 
                 CacheService.getInstance().putSingleElementInCache(res.getBody());
-                CacheService.getInstance().putSingleElementInCacheForNLP(res.getBody());
+
             }
         } catch (QueueDoesNotExistException queueDoesNotExistException) {
 

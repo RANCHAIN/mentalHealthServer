@@ -3,6 +3,8 @@ package controller;
 
 import cache.CacheService;
 import com.amazonaws.services.sqs.model.Message;
+import com.google.common.collect.Lists;
+import com.google.gson.Gson;
 import data.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -186,6 +188,7 @@ public class ChatControllerImpl {
         logger.info("receiveConversation of " + receivedData);
         SqsSerivce sqsSerivce = SqsSerivce.getInstance();
         sqsSerivce.insertOneMessageToOneQueue("https://sqs.us-east-1.amazonaws.com/183523990685/mentalQueue", receivedData);
+        CacheService.getInstance().putSingleElementInCacheForNLP(receivedData);
         return new ResponseEntity<String>("ok", HttpStatus.OK);
 
 
@@ -240,11 +243,7 @@ public class ChatControllerImpl {
     public ResponseEntity<List<String>> nlpTopics(
 
             @RequestBody String text) {
-
-        String receivedData = Utils.getBeautifiedJson.apply(text);
         logger.info("topics of " + text);
-
-
         return new ResponseEntity<List<String>>(NlpService.getInstance().getTopics(text), HttpStatus.OK);
 
     }
@@ -256,11 +255,29 @@ public class ChatControllerImpl {
             @ApiResponse(code = 200, message = "Successfully"),
             @ApiResponse(code = 500, message = "Exception is encountered")
     })
-    public ResponseEntity<Verdict> nlpSubmit(
+    public ResponseEntity<OrganizedScore> nlpSubmit(
             @RequestBody String username) {
         Verdict v = NlpService.getInstance().getVerdictForThisUsername(username);
-        CacheService.getInstance().putSingleElementInCacheForVerdicts(v);
-        return new ResponseEntity<Verdict>(v, HttpStatus.OK);
+
+
+        OrganizedScore organizedScore = new OrganizedScore();
+
+        if (v.getState() != "") {
+
+            organizedScore.setVerdict(v.getState());
+            Gson g = new Gson();
+            Score score = g.fromJson(v.getScore(), Score.class);
+            organizedScore.setDepScore(score.getNegative().toString());
+            CacheService.getInstance().putSingleElementInCacheForVerdicts(v);
+        } else {
+            organizedScore.setDepScore("");
+            organizedScore.setVerdict("");
+        }
+
+        logger.info("organizedScore is " + Utils.getBeautifiedJson.apply(organizedScore));
+
+
+        return new ResponseEntity<OrganizedScore>(organizedScore, HttpStatus.OK);
     }
 
 
@@ -270,9 +287,26 @@ public class ChatControllerImpl {
             @ApiResponse(code = 200, message = "Successfully"),
             @ApiResponse(code = 500, message = "Exception is encountered")
     })
-    public ResponseEntity<List<Verdict>> getAllVerdicts() {
+    public ResponseEntity<List<OrganizedScore>> getAllVerdicts() {
         List<Verdict> cs = CacheService.getInstance().getAllVerdicts();
-        return new ResponseEntity<List<Verdict>>(cs, HttpStatus.OK);
+        List<OrganizedScore> res = Lists.newArrayList();
+        for (Verdict v : cs) {
+
+            OrganizedScore organizedScore = new OrganizedScore();
+
+            if (v.getState() != "") {
+                organizedScore.setVerdict(v.getState());
+                Gson g = new Gson();
+                Score score = g.fromJson(v.getScore(), Score.class);
+                organizedScore.setDepScore(score.getNegative().toString());
+            } else {
+                organizedScore.setDepScore("");
+                organizedScore.setVerdict("");
+            }
+
+            res.add(organizedScore);
+        }
+        return new ResponseEntity<List<OrganizedScore>>(res, HttpStatus.OK);
     }
 
 
