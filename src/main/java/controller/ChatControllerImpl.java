@@ -287,7 +287,7 @@ public class ChatControllerImpl {
             @ApiResponse(code = 200, message = "Successfully"),
             @ApiResponse(code = 500, message = "Exception is encountered")
     })
-    public ResponseEntity<List<OrganizedScore>> getAllVerdicts() {
+    public ResponseEntity<DataForPlotting> getAllVerdicts() {
         List<Verdict> cs = CacheService.getInstance().getAllVerdicts();
         List<OrganizedScore> res = Lists.newArrayList();
         for (Verdict v : cs) {
@@ -306,7 +306,23 @@ public class ChatControllerImpl {
 
             res.add(organizedScore);
         }
-        return new ResponseEntity<List<OrganizedScore>>(res, HttpStatus.OK);
+
+        DataForPlotting dataForPlotting = new DataForPlotting();
+
+        List<Integer> seires = Lists.newArrayList();
+        for (int i = 0; i < res.size(); i++) {
+            seires.add(i + 1);
+        }
+        dataForPlotting.setX(seires);
+
+
+        List<Double> doubleList = Lists.newArrayList();
+        for (int i = 0; i < res.size(); i++) {
+            doubleList.add(Double.valueOf(res.get(i).getDepScore()));
+        }
+        dataForPlotting.setY(doubleList);
+
+        return new ResponseEntity<DataForPlotting>(dataForPlotting, HttpStatus.OK);
     }
 
 
