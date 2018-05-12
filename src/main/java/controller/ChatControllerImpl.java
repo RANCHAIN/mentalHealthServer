@@ -2,10 +2,7 @@ package controller;
 
 
 import com.amazonaws.services.sqs.model.Message;
-import data.ChatMessage;
-import data.ChatSession;
-import data.ConversationEntity;
-import data.ReceiveMessageRequestEntity;
+import data.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -17,8 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import service.ChatService;
+import service.NlpService;
 import utils.Utils;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -187,6 +186,63 @@ public class ChatControllerImpl {
 
     }
 
+    @RequestMapping(value = "/wearable", method = RequestMethod.POST, consumes = "application/json")
+    @ApiOperation(value = "wearable", response = ResponseEntity.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully"),
+            @ApiResponse(code = 500, message = "Exception is encountered")
+    })
+
+    public ResponseEntity<String> wearable(
+
+            @RequestBody WearbleRequestData wearbleRequestData) {
+
+        String receivedData = Utils.getBeautifiedJson.apply(wearbleRequestData);
+        logger.info("wearable of " + receivedData);
+
+        return new ResponseEntity<String>("ok", HttpStatus.OK);
+
+    }
+
+
+    @RequestMapping(value = "/nlp/sentimental", method = RequestMethod.POST)
+    @ApiOperation(value = "nlp sentimental", response = ResponseEntity.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully"),
+            @ApiResponse(code = 500, message = "Exception is encountered")
+    })
+
+    public ResponseEntity<String[]> nlpSentimental(
+
+            @RequestBody String text) {
+
+        String receivedData = Utils.getBeautifiedJson.apply(text);
+        logger.info("nlpSentimental of " + text);
+
+
+        return new ResponseEntity<String[]>(NlpService.getInstance().getSentimental(text), HttpStatus.OK);
+
+    }
+
+
+    @RequestMapping(value = "/nlp/topics", method = RequestMethod.POST)
+    @ApiOperation(value = "nlp topics", response = ResponseEntity.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully"),
+            @ApiResponse(code = 500, message = "Exception is encountered")
+    })
+
+    public ResponseEntity<List<String>> nlpTopics(
+
+            @RequestBody String text) {
+
+        String receivedData = Utils.getBeautifiedJson.apply(text);
+        logger.info("topics of " + text);
+
+
+        return new ResponseEntity<List<String>>(NlpService.getInstance().getTopics(text), HttpStatus.OK);
+
+    }
 
 }
 
