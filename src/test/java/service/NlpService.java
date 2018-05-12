@@ -1,11 +1,12 @@
 package service;
 
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.comprehend.AmazonComprehend;
 import com.amazonaws.services.comprehend.AmazonComprehendClientBuilder;
-import com.amazonaws.services.comprehend.model.*;
+import com.amazonaws.services.comprehend.model.DetectKeyPhrasesRequest;
+import com.amazonaws.services.comprehend.model.DetectKeyPhrasesResult;
 import org.junit.Test;
 
 public class NlpService {
@@ -17,11 +18,11 @@ public class NlpService {
 
         // Create credentials using a provider chain. For more information, see
         // https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/credentials.html
-        AWSCredentialsProvider awsCreds = DefaultAWSCredentialsProviderChain.getInstance();
+
 
         AmazonComprehend comprehendClient =
                 AmazonComprehendClientBuilder.standard()
-                        .withCredentials(awsCreds)
+                        .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials("AKIAJKNHOSBN2K3FSPOQ", "hVbLjYLn5pRCm8MXvUsRkkeBhr2r0CxEtEUYQVcS")))
                         .withRegion(Regions.US_EAST_1)
                         .build();
 

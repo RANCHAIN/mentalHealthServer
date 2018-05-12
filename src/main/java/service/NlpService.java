@@ -1,6 +1,8 @@
 package service;
 
 import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.comprehend.AmazonComprehend;
@@ -27,9 +29,10 @@ public class NlpService {
         AWSCredentialsProvider awsCreds = DefaultAWSCredentialsProviderChain.getInstance();
         this.comprehendClient =
                 AmazonComprehendClientBuilder.standard()
-                        .withCredentials(awsCreds)
+                        .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials("AKIAJKNHOSBN2K3FSPOQ", "hVbLjYLn5pRCm8MXvUsRkkeBhr2r0CxEtEUYQVcS")))
                         .withRegion(Regions.US_EAST_1)
                         .build();
+
 
     }
 
