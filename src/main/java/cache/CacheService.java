@@ -21,9 +21,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class CacheService {
 
 
-    private static volatile CacheService single_instance = null;
     private static final Logger logger = LoggerFactory.getLogger(CacheService.class);
-
+    private static volatile CacheService single_instance = null;
     private ConcurrentHashMap<String, List<String>> cacheMap;
     private ReadWriteLock lock;
     private Lock writeLock;
@@ -150,7 +149,7 @@ public class CacheService {
     public void putSingleElementInCacheForVerdicts(Verdict verdict) {
         this.writeLock.lock();
         this.cacheListForVerdicts.add(verdict);
-        logger.info("cache size now is " + this.cacheListForVerdicts.size());
+        logger.info("cacheListForVerdicts size now is " + this.cacheListForVerdicts.size());
         this.writeLock.unlock();
     }
 

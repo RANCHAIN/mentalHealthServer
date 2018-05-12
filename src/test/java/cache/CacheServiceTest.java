@@ -17,7 +17,5 @@ public class CacheServiceTest {
         System.out.println(cacheService.getValueAsList("2"));
 
 
-
-
     }
 }

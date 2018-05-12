@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 
 public class NlpService {
 
-    private static NlpService single_instance = null;
     private static final Logger logger = LoggerFactory.getLogger(NlpService.class);
+    private static NlpService single_instance = null;
     private AmazonComprehend comprehendClient;
 
 
@@ -70,7 +70,11 @@ public class NlpService {
         List<String> res = CacheService.getInstance().getAllMsgsFromCacheForNLPByUser(username);
         List<String[]> verdicts = res.stream().map(x -> getSentimental(x)).collect(Collectors.toList());
 
-        return new Verdict(verdicts.get(verdicts.size() - 1)[0], verdicts.get(verdicts.size() - 1)[1]);
+        if (verdicts.size() > 0) {
+            return new Verdict(verdicts.get(verdicts.size() - 1)[0], verdicts.get(verdicts.size() - 1)[1]);
+        }
+
+        return new Verdict("", "");
 
 
     }

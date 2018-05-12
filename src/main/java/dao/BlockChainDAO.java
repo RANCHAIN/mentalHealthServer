@@ -7,8 +7,8 @@ import utils.Utils;
 import java.util.List;
 
 public class BlockChainDAO {
-    private static BlockChainDAO single_instance = null;
     private static final Logger logger = LoggerFactory.getLogger(BlockChainDAO.class);
+    private static BlockChainDAO single_instance = null;
 
 
     // private constructor restricted to this class itself

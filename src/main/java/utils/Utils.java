@@ -60,21 +60,6 @@ public class Utils {
 
     public static Function<String, Document> readFile = path -> convertStringToDocument(readFileAsString.apply(path));
     public static Function<InputStream, Document> readInputStream = path -> convertStringToDocument(readInputStreamAsString.apply(path));
-
-
-    public static Document convertStringToDocument(String xmlStr) {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder;
-        try {
-            builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(new InputSource(new StringReader(xmlStr)));
-            return doc;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public static Function<String, JsonNode> loadJsonNodeFromString = x -> {
         try {
             return JsonLoader.fromString(x);
@@ -83,8 +68,6 @@ public class Utils {
         }
         return null;
     };
-
-
     public static Function<String, String> convertYamlToJson = yamlString -> {
 
         Yaml yaml = new Yaml();
@@ -92,7 +75,6 @@ public class Utils {
         JSONObject jsonObject = new JSONObject(map);
         return jsonObject.toString();
     };
-
     public static Predicate<String> isJSONValid = x -> {
         try {
             new Gson().fromJson(x, Object.class);
@@ -101,10 +83,7 @@ public class Utils {
             return false;
         }
     };
-
     public static Function<Object, String> getBeautifiedJson = (x) -> new GsonBuilder().setPrettyPrinting().create().toJson(x);
-
-
     public static Function<String, String> convertJsonToYaml = jsonString -> {
         // parse JSON
         JsonNode jsonNodeTree = null;
@@ -122,9 +101,7 @@ public class Utils {
         }
         return jsonAsYaml;
     };
-
     public static Function<String, String> getResourceFileAsString = path -> readInputStreamAsString.apply(Thread.currentThread().getContextClassLoader().getResourceAsStream(path));
-
     public static BiPredicate<String, String> validateJsonToJsonSchema = (data, schema) -> {
 
         try {
@@ -142,6 +119,18 @@ public class Utils {
         return false;
     };
 
+    public static Document convertStringToDocument(String xmlStr) {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder;
+        try {
+            builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(new InputSource(new StringReader(xmlStr)));
+            return doc;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public static void writeStringToFile(String content, String fileName) throws IOException {
         try (PrintWriter out = new PrintWriter(fileName)) {

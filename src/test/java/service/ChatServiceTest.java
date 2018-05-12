@@ -38,7 +38,7 @@ public class ChatServiceTest {
         ChatService chatService = ChatService.getInstance();
         Assert.assertNotNull(chatService);
 
-     //   chatService.terminateOneSession("from1", "to2");
+        //   chatService.terminateOneSession("from1", "to2");
     }
 
 }

@@ -64,8 +64,8 @@ public class SqsSerivceTest {
         String q1 = sqsSerivce.createQueue("qqqq");
         sqsSerivce.insertOneMessageToOneQueue("qqqq", "lalalaa");
         sqsSerivce.insertOneMessageToOneQueue("qqqq", "lalaldsdsdaa");
-       // String res = sqsSerivce.receiveMessagesFromQueue("qqqq");
-      //  System.out.println(res);
+        // String res = sqsSerivce.receiveMessagesFromQueue("qqqq");
+        //  System.out.println(res);
 
     }
 

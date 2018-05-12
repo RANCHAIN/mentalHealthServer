@@ -102,6 +102,21 @@ public class SimpleSoundCapture extends JPanel implements ActionListener {
         add(p1);
     }
 
+    public static void main(String s[]) {
+        SimpleSoundCapture ssc = new SimpleSoundCapture();
+        ssc.open();
+        JFrame f = new JFrame("Capture/Playback");
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.getContentPane().add("Center", ssc);
+        f.pack();
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int w = 360;
+        int h = 170;
+        f.setLocation(screenSize.width / 2 - w / 2, screenSize.height / 2 - h / 2);
+        f.setSize(w, h);
+        f.show();
+    }
+
     public void open() {
     }
 
@@ -391,19 +406,4 @@ public class SimpleSoundCapture extends JPanel implements ActionListener {
 
         }
     } // End class Capture
-
-    public static void main(String s[]) {
-        SimpleSoundCapture ssc = new SimpleSoundCapture();
-        ssc.open();
-        JFrame f = new JFrame("Capture/Playback");
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.getContentPane().add("Center", ssc);
-        f.pack();
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int w = 360;
-        int h = 170;
-        f.setLocation(screenSize.width / 2 - w / 2, screenSize.height / 2 - h / 2);
-        f.setSize(w, h);
-        f.show();
-    }
 }

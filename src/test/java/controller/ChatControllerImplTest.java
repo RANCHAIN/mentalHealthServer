@@ -1,10 +1,11 @@
 package controller;
 
-import data.*;
+import data.ChatMessage;
+import data.ChatSession;
+import data.ConversationEntity;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.http.ResponseEntity;
-import utils.Utils;
 
 public class ChatControllerImplTest {
 

@@ -11,8 +11,8 @@ import java.util.List;
 
 public class BlockChainService {
 
-    private static BlockChainService single_instance = null;
     private static final Logger logger = LoggerFactory.getLogger(BlockChainService.class);
+    private static BlockChainService single_instance = null;
     private BlockChainDAO blockChainDAO;
 
 

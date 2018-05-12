@@ -17,8 +17,8 @@ import java.util.concurrent.ExecutionException;
 @Component
 public class ChatService {
 
-    private static ChatService single_instance = null;
     private static final Logger logger = LoggerFactory.getLogger(ChatService.class);
+    private static ChatService single_instance = null;
     private SqsSerivce sqsSerivce;
     private CacheService cacheService;
     private BlockChainService blockChainService;

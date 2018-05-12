@@ -14,8 +14,8 @@ import java.util.List;
 
 public class SqsSerivce {
 
-    private static SqsSerivce single_instance = null;
     private static final Logger logger = LoggerFactory.getLogger(SqsSerivce.class);
+    private static SqsSerivce single_instance = null;
     private AmazonSQS amazonSQS;
 
 
