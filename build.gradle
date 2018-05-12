@@ -56,10 +56,19 @@ ext {
 dependencies {
 
     // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk
-    compile group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.11.325'
+    // compile group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.11.325'
 //// https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-sqs
 //    compile group: 'com.amazonaws', name: 'aws-java-sdk-sqs', version: '1.11.325'
 //
+
+    // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-core
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-core', version: '1.11.327'
+    // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-comprehend
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-comprehend', version: '1.11.327'
+
+    // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-sqs
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-sqs', version: '1.11.327'
+
 
 
 
@@ -97,7 +106,7 @@ dependencies {
     compile("org.apache.activemq:activemq-broker")
     compile("com.fasterxml.jackson.core:jackson-databind")
 
-    compile ('io.socket:socket.io-client:1.0.0') {
+    compile('io.socket:socket.io-client:1.0.0') {
         // excluding org.json which is provided by Android
         exclude group: 'org.json', module: 'json'
     }
