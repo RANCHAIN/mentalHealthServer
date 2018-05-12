@@ -29,13 +29,11 @@ public class NlpService {
         AWSCredentialsProvider awsCreds = DefaultAWSCredentialsProviderChain.getInstance();
         this.comprehendClient =
                 AmazonComprehendClientBuilder.standard()
-                        .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials("AKIAJKNHOSBN2K3FSPOQ", "hVbLjYLn5pRCm8MXvUsRkkeBhr2r0CxEtEUYQVcS")))
+                        .withCredentials(awsCreds)
                         .withRegion(Regions.US_EAST_1)
                         .build();
 
-
     }
-
     // static method to create instance of Singleton class
     public static NlpService getInstance() {
         if (single_instance == null)

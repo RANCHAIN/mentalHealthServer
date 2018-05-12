@@ -1,8 +1,6 @@
 package messageQueue;
 
 import com.amazonaws.AmazonClientException;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sqs.AmazonSQS;
@@ -35,7 +33,7 @@ public class SqsSerivce {
         }
 
         this.amazonSQS = AmazonSQSClientBuilder.standard()
-                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials("AKIAJKNHOSBN2K3FSPOQ", "hVbLjYLn5pRCm8MXvUsRkkeBhr2r0CxEtEUYQVcS")))
+                .withCredentials(credentialsProvider)
                 .withRegion(Regions.US_EAST_1)
                 .build();
 
