@@ -2,6 +2,12 @@ package controller;
 
 
 import cache.CacheService;
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.rekognition.AmazonRekognition;
+import com.amazonaws.services.rekognition.AmazonRekognitionClientBuilder;
+import com.amazonaws.services.rekognition.model.*;
 import com.amazonaws.services.sqs.model.Message;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
@@ -11,6 +17,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import messageQueue.SqsSerivce;
+import org.apache.commons.io.Charsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -24,6 +31,8 @@ import utils.Utils;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -346,6 +355,64 @@ public class ChatControllerImpl {
             return "You failed to upload " + name + " because the file was empty.";
         }
     }
+
+
+    @RequestMapping(value = "/image/upload", method = RequestMethod.POST)
+    @ApiOperation(value = "image upload", response = ResponseEntity.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully"),
+            @ApiResponse(code = 500, message = "Exception is encountered")
+    })
+    public ResponseEntity<String> imageUpolaod(
+            @RequestBody String image) throws IOException {
+
+        String base64Image = "data:image/png;base64," + image;
+        logger.info(base64Image);
+
+        ByteBuffer bb =  ByteBuffer.wrap(base64Image.getBytes(Charsets.UTF_8));
+
+        ProfileCredentialsProvider credentialsProvider = new ProfileCredentialsProvider();
+        try {
+            credentialsProvider.getCredentials();
+        } catch (Exception e) {
+            throw new AmazonClientException("Cannot load the credentials from the credential profiles file. "
+                    + "Please make sure that your credentials file is at the correct "
+                    + "location (/Usersuserid.aws/credentials), and is in a valid format.", e);
+        }
+
+
+        AmazonRekognition rekognitionClient = AmazonRekognitionClientBuilder
+                .standard()
+                .withRegion(Regions.US_EAST_1)
+                .withCredentials(credentialsProvider)
+                .build();
+
+
+
+
+        DetectLabelsRequest request = new DetectLabelsRequest()
+                .withImage(new Image()
+                        .withBytes(bb))
+                .withMaxLabels(10)
+                .withMinConfidence(77F);
+
+        try {
+
+            DetectLabelsResult result = rekognitionClient.detectLabels(request);
+            List<Label> labels = result.getLabels();
+
+            for (Label label : labels) {
+                System.out.println(label.getName() + ": " + label.getConfidence().toString());
+            }
+
+        } catch (AmazonRekognitionException e) {
+            e.printStackTrace();
+        }
+
+
+        return new ResponseEntity<String>("dd", HttpStatus.OK);
+    }
+
 
 }
 

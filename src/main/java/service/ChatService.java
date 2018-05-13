@@ -102,7 +102,7 @@ public class ChatService {
         return res;
     }
 
-    @Scheduled(fixedRate = 3000)
+    @Scheduled(fixedRate = 10000)
     public void getFilesFromQueue() {
 
         logger.info("getting logger queues");
